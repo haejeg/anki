@@ -119,6 +119,8 @@ class Overview:
             self.on_unbury()
         elif url == "description":
             self.edit_description()
+        elif url == "quiz":
+            self.mw.on_quiz()
         elif url.lower().startswith("http"):
             openLink(url)
         return False
@@ -130,6 +132,7 @@ class Overview:
             ("e", self.empty_current_filtered_deck),
             ("c", self.onCustomStudyKey),
             ("u", self.on_unbury),
+            ("q", self.mw.on_quiz),
         ]
 
     def _current_deck_is_filtered(self) -> int:
@@ -295,6 +298,7 @@ class Overview:
             links.append(["U", "unbury", tr.studying_unbury()])
         if not is_dyn:
             links.append(["", "description", tr.scheduling_description()])
+        links.append(["Q", "quiz", tr.quiz_overview_button()])
         link_handler = gui_hooks.overview_will_render_bottom(
             self._linkHandler,
             links,

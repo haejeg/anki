@@ -68,6 +68,7 @@ class AnkiWebViewKind(Enum):
     IMPORT_LOG = "import log"
     IMPORT_ANKI_PACKAGE = "anki package import"
     PREFERENCES = "preferences"
+    QUIZ = "quiz"
 
 
 def _is_internal_url(url: QUrl) -> bool:

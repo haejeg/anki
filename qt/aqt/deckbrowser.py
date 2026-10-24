@@ -185,9 +185,13 @@ class DeckBrowser:
             stats=self._renderStats(),
         )
         gui_hooks.deck_browser_will_render_content(self, content)
+        body = self._body % content.__dict__
+        if offset is None:
+            # only animate the deck list in on a fresh load, not when
+            # re-rendering in place (eg after collapsing a deck)
+            body = f"<div class=entering>{body}</div>"
         self.web.stdHtml(
-            self._v1_upgrade_message(data.sched_upgrade_required)
-            + self._body % content.__dict__,
+            self._v1_upgrade_message(data.sched_upgrade_required) + body,
             css=["css/deckbrowser.css"],
             js=[
                 "js/vendor/jquery.min.js",

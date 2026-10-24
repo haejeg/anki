@@ -4,6 +4,7 @@
 @use "../../../../../ts/lib/sass/vars" as *;
 @use "../../../../../ts/lib/sass/card-counts";
 @use "../../../../../ts/lib/sass/elevation" as *;
+@use "../../../../../ts/lib/sass/motion";
 
 table {
     padding: 1rem;
@@ -25,15 +26,39 @@ a.deck {
     text-decoration: none;
     min-width: 5em;
     display: inline-block;
+
+    .fancy & {
+        font-weight: 500;
+    }
+    @include motion.when-animated {
+        transition: transform var(--transition) motion.$ease-out;
+    }
 }
 
 a.deck:hover {
     text-decoration: underline;
+
+    .fancy & {
+        text-decoration: none;
+    }
+    @include motion.when-animated {
+        transform: translateX(3px);
+    }
 }
 
 th {
     border-bottom: 1px solid color(border-subtle);
     padding-bottom: 5px;
+
+    .fancy & {
+        border-bottom: none;
+        padding: 0 12px 8px;
+        color: color(fg-subtle);
+        font-size: 0.78em;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+    }
 }
 
 tr.deck td {
@@ -42,7 +67,70 @@ tr.deck td {
 
     .fancy & {
         border: unset;
-        padding: 4px 12px;
+        padding: 7px 14px;
+    }
+    @include motion.when-animated {
+        transition: background var(--transition) linear;
+    }
+}
+
+// due counts as tinted pills
+.fancy tr.deck {
+    .new-count,
+    .learn-count,
+    .review-count,
+    .zero-count {
+        display: inline-block;
+        padding: 1px 8px;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .new-count,
+    .learn-count,
+    .review-count {
+        position: relative;
+        isolation: isolate;
+        font-weight: 600;
+
+        &::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            border-radius: 999px;
+            background: currentColor;
+            opacity: 0.14;
+        }
+    }
+}
+
+// cascade rows in on a fresh load (not on collapse/expand)
+.entering {
+    tr.deck {
+        @include motion.stagger($count: 16, $step: 35ms);
+        @include motion.when-animated {
+            animation: rise-in 450ms motion.$ease-out var(--enter-delay, 0ms) backwards;
+
+            .new-count,
+            .learn-count,
+            .review-count {
+                animation: pop-in 420ms motion.$ease-spring
+                    calc(var(--enter-delay, 0ms) + 180ms) backwards;
+            }
+        }
+    }
+
+    th,
+    #studiedToday {
+        @include motion.when-animated {
+            animation: fade-in 600ms ease-out backwards;
+        }
+    }
+
+    #studiedToday {
+        @include motion.when-animated {
+            animation-delay: 400ms;
+        }
     }
 }
 
@@ -77,6 +165,7 @@ tr:hover:not(.top-level-drag-row) {
         }
         .gears {
             visibility: visible;
+            opacity: 0.5;
         }
     }
 }
@@ -130,10 +219,24 @@ tr:hover:not(.top-level-drag-row) {
 .gears {
     width: 1em;
     height: 1em;
-    opacity: 0.5;
+    opacity: 0;
     padding-top: 0.2em;
     cursor: pointer;
     visibility: hidden;
+
+    @include motion.when-animated {
+        transition:
+            opacity var(--transition) ease-out,
+            visibility var(--transition),
+            transform 400ms motion.$ease-spring;
+    }
+
+    &:hover {
+        opacity: 0.9 !important;
+        @include motion.when-animated {
+            transform: rotate(90deg);
+        }
+    }
 }
 
 .nightMode {

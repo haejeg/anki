@@ -5,6 +5,7 @@
 @use "../../../../../ts/lib/sass/vars" as *;
 @use "../../../../../ts/lib/sass/elevation" as *;
 @use "../../../../../ts/lib/sass/button-mixins" as button;
+@use "../../../../../ts/lib/sass/motion";
 
 .header {
     display: grid;
@@ -49,6 +50,7 @@
     &:hover {
         text-decoration: underline;
     }
+    @include motion.press-feedback($lift: false);
 }
 
 body {

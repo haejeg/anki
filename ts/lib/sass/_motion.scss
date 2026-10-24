@@ -1,0 +1,67 @@
+/* Copyright: Ankitects Pty Ltd and contributors
+ * License: GNU AGPL, version 3 or later; http://www.gnu.org/licenses/agpl.html */
+
+// Shared motion helpers for the Qt webview pages. Animations only run with
+// the fancy (non-minimalist) style, and only when reduced motion hasn't been
+// requested in Anki's preferences or by the operating system.
+
+$ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+$ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+@mixin when-animated {
+    body.fancy:not(.reduce-motion) & {
+        @media (prefers-reduced-motion: no-preference) {
+            @content;
+        }
+    }
+}
+
+// Sets --enter-delay on the first $count siblings so entrance animations
+// can cascade. Later siblings share the final delay.
+@mixin stagger($count: 16, $step: 35ms, $base: 0ms) {
+    @for $i from 1 through $count {
+        &:nth-child(#{$i}) {
+            --enter-delay: #{$base + $step * ($i - 1)};
+        }
+    }
+    &:nth-child(n + #{$count + 1}) {
+        --enter-delay: #{$base + $step * $count};
+    }
+}
+
+// Lift on hover and squish on press.
+@mixin press-feedback($lift: true) {
+    @include when-animated {
+        transition:
+            transform var(--transition) $ease-spring,
+            box-shadow var(--transition) linear;
+        @if $lift {
+            &:hover:not([disabled]) {
+                transform: translateY(-1px);
+            }
+        }
+        &:active:not([disabled]) {
+            transform: scale(0.96);
+        }
+    }
+}
+
+@keyframes rise-in {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+}
+
+@keyframes pop-in {
+    from {
+        opacity: 0;
+        transform: scale(0.6);
+    }
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+}

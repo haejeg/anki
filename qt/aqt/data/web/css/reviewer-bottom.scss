@@ -4,6 +4,7 @@
 @use "../../../../../ts/lib/sass/root-vars";
 @use "../../../../../ts/lib/sass/vars" as *;
 @use "../../../../../ts/lib/sass/card-counts";
+@use "../../../../../ts/lib/sass/motion";
 
 :root {
     --focus-color: #{palette-of(border-focus)};
@@ -28,6 +29,78 @@ button {
     white-space: nowrap;
     margin: 9px;
     position: relative;
+
+    @include motion.press-feedback;
+}
+
+// show answer / ease buttons are re-inserted for every card, so they
+// animate in each time
+#middle {
+    #ansbut {
+        @include motion.when-animated {
+            animation: rise-in 300ms motion.$ease-out backwards;
+        }
+    }
+
+    td {
+        @include motion.stagger($count: 4, $step: 50ms);
+    }
+
+    button[data-ease] {
+        @include motion.when-animated {
+            animation: pop-in 380ms motion.$ease-spring var(--enter-delay, 0ms)
+                backwards;
+        }
+    }
+}
+
+// colour accent per answer
+button[data-ease="1"] {
+    --ease-color: var(--accent-danger);
+}
+button[data-ease="2"] {
+    --ease-color: var(--flag-2);
+}
+button[data-ease="3"] {
+    --ease-color: var(--state-review);
+}
+button[data-ease="4"] {
+    --ease-color: var(--state-new);
+}
+
+.fancy button[data-ease] {
+    min-width: 72px;
+
+    &::after {
+        content: "";
+        position: absolute;
+        left: 30%;
+        right: 30%;
+        bottom: 3px;
+        height: 3px;
+        border-radius: 3px;
+        background: var(--ease-color);
+        opacity: 0.85;
+    }
+    &:hover::after {
+        left: 14%;
+        right: 14%;
+        opacity: 1;
+    }
+
+    .nobold {
+        color: var(--ease-color);
+        font-weight: 600;
+    }
+}
+
+button[data-ease]::after {
+    @include motion.when-animated {
+        transition:
+            left var(--transition) motion.$ease-spring,
+            right var(--transition) motion.$ease-spring,
+            opacity var(--transition) linear;
+    }
 }
 
 .hitem {

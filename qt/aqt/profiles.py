@@ -34,6 +34,8 @@ if TYPE_CHECKING:
     from aqt.browser.layout import BrowserLayout
     from aqt.editor import EditorMode
 
+DEFAULT_AI_MODEL = "gpt-6-luna"
+
 
 # Profile handling
 ##########################################################################
@@ -540,11 +542,24 @@ create table if not exists profiles
         self.meta["uiScale"] = scale
 
     def reduce_motion(self) -> bool:
-        return self.meta.get("reduce_motion", True)
+        return self.meta.get("reduce_motion", False)
 
     def set_reduce_motion(self, on: bool) -> None:
         self.meta["reduce_motion"] = on
         gui_hooks.body_classes_need_update()
+
+    # stored in meta rather than the profile, so it's never synced
+    def ai_api_key(self) -> str:
+        return self.meta.get("ai_api_key", "")
+
+    def set_ai_api_key(self, key: str) -> None:
+        self.meta["ai_api_key"] = key
+
+    def ai_model(self) -> str:
+        return self.meta.get("ai_model") or DEFAULT_AI_MODEL
+
+    def set_ai_model(self, model: str) -> None:
+        self.meta["ai_model"] = model
 
     def minimalist_mode(self) -> bool:
         return self.meta.get("minimalist_mode", False)

@@ -1,0 +1,270 @@
+/* Copyright: Ankitects Pty Ltd and contributors
+ * License: GNU AGPL, version 3 or later; http://www.gnu.org/licenses/agpl.html */
+
+@use "../../../../../ts/lib/sass/root-vars";
+@use "../../../../../ts/lib/sass/vars" as *;
+@use "../../../../../ts/lib/sass/elevation" as *;
+@use "../../../../../ts/lib/sass/button-mixins" as button;
+@use "../../../../../ts/lib/sass/motion";
+
+body {
+    margin: 0;
+    padding: 1.5em 1.25em;
+    -webkit-user-select: none;
+    overflow-x: hidden;
+}
+
+#quiz {
+    max-width: 560px;
+    margin: 0 auto;
+}
+
+.quiz-progress {
+    height: 6px;
+    margin-bottom: 1.5em;
+    border-radius: 999px;
+    background: color(border-subtle);
+    overflow: hidden;
+}
+
+.quiz-progress-bar {
+    width: 0;
+    height: 100%;
+    border-radius: inherit;
+    background: color(state-new);
+
+    @include motion.when-animated {
+        transition: width 500ms motion.$ease-out;
+    }
+}
+
+.quiz-card {
+    padding: 1.5em;
+    border: 1px solid color(border-subtle);
+    border-radius: prop(border-radius-medium);
+    background: color(canvas-elevated);
+    @include elevation(1, $opacity-boost: -0.08);
+
+    @include motion.when-animated {
+        animation: rise-in 400ms motion.$ease-out backwards;
+    }
+}
+
+.quiz-counter {
+    color: color(fg-subtle);
+    font-size: 0.78em;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.quiz-question {
+    margin: 0.5em 0 1.1em;
+    font-size: 1.3em;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+button.quiz-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    margin: 0;
+    padding: 12px 14px;
+    box-sizing: border-box;
+    text-align: start;
+    font-size: 1em;
+    font-weight: 400;
+    white-space: normal;
+    @include motion.press-feedback;
+
+    @include motion.when-animated {
+        animation: rise-in 380ms motion.$ease-out var(--enter-delay, 0ms) backwards;
+        transition:
+            transform var(--transition) motion.$ease-spring,
+            background var(--transition) linear,
+            border-color var(--transition) linear,
+            opacity var(--transition) linear;
+    }
+
+    &.locked {
+        pointer-events: none;
+    }
+
+    &.correct {
+        border-color: color(state-review);
+        background: color(canvas-elevated);
+        box-shadow: inset 0 0 0 1px color(state-review);
+
+        .quiz-key {
+            background: color(state-review);
+            color: white;
+        }
+        @include motion.when-animated {
+            animation: bump 380ms motion.$ease-spring;
+        }
+    }
+
+    &.wrong {
+        border-color: color(accent-danger);
+        box-shadow: inset 0 0 0 1px color(accent-danger);
+
+        .quiz-key {
+            background: color(accent-danger);
+            color: white;
+        }
+        @include motion.when-animated {
+            animation: shake 400ms ease-in-out;
+        }
+    }
+
+    &.dimmed {
+        opacity: 0.45;
+    }
+}
+
+.quiz-key {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.7em;
+    height: 1.7em;
+    border-radius: 999px;
+    background: color(border-subtle);
+    font-size: 0.85em;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.quiz-feedback {
+    margin-top: 1.1em;
+    padding: 0.8em 1em;
+    border-radius: prop(border-radius);
+    line-height: 1.45;
+
+    &.is-correct strong {
+        color: color(state-review);
+    }
+    &.is-wrong strong {
+        color: color(accent-danger);
+    }
+
+    @include motion.when-animated {
+        animation: rise-in 350ms motion.$ease-out backwards;
+    }
+}
+
+button.quiz-next {
+    @include button.base($primary: true);
+    display: block;
+    margin: 1.1em 0 0 auto;
+    padding: 10px 22px;
+    border-radius: 999px;
+    font-weight: 600;
+    @include motion.press-feedback;
+
+    @include motion.when-animated {
+        animation: pop-in 380ms motion.$ease-spring 150ms backwards;
+    }
+}
+
+// results
+
+.quiz-results {
+    text-align: center;
+    padding: 2.5em 1.5em;
+}
+
+.quiz-score-total {
+    font-size: 4em;
+    font-weight: 700;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+.quiz-score-number {
+    display: inline-block;
+    color: color(state-new);
+}
+
+.quiz-score-out-of {
+    color: color(fg-faint);
+    font-size: 0.5em;
+}
+
+.quiz-message {
+    margin-top: 0.6em;
+    font-size: 1.3em;
+    font-weight: 600;
+}
+
+.quiz-score-text {
+    margin-top: 0.3em;
+    color: color(fg-subtle);
+}
+
+.quiz-result-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 1.8em;
+
+    button {
+        margin: 0;
+        padding: 10px 22px;
+        border-radius: 999px;
+        @include motion.press-feedback;
+    }
+
+    button.quiz-next {
+        margin: 0;
+    }
+}
+
+.quiz-confetti {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+
+    span {
+        position: absolute;
+        top: -12px;
+        width: 8px;
+        height: 14px;
+        border-radius: 2px;
+        animation: confetti-fall linear forwards;
+    }
+}
+
+@keyframes bump {
+    50% {
+        transform: scale(1.03);
+    }
+}
+
+@keyframes shake {
+    20%,
+    60% {
+        transform: translateX(-6px);
+    }
+    40%,
+    80% {
+        transform: translateX(6px);
+    }
+}
+
+@keyframes confetti-fall {
+    to {
+        transform: translate(var(--drift), 105vh) rotate(var(--spin));
+        opacity: 0.6;
+    }
+}

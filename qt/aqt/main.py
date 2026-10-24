@@ -1457,6 +1457,7 @@ title="{}" {}>{}</button>""".format(
         qconnect(m.actionNoteTypes.triggered, self.onNoteTypes)
         qconnect(m.action_check_for_updates.triggered, self.on_check_for_updates)
         qconnect(m.actionPreferences.triggered, self.onPrefs)
+        self._setup_quiz_menu()
 
         # View
         qconnect(
@@ -1717,6 +1718,26 @@ title="{}" {}>{}</button>""".format(
 
         gui_hooks.media_check_will_start()
         check_media_db(self)
+
+    def _setup_quiz_menu(self) -> None:
+        menu = self.form.menuTools
+        menu.addSeparator()
+        quiz = menu.addAction(tr.quiz_menu_quiz_me())
+        assert quiz is not None
+        qconnect(quiz.triggered, self.on_quiz)
+        settings = menu.addAction(tr.quiz_menu_ai_settings())
+        assert settings is not None
+        qconnect(settings.triggered, self.on_ai_settings)
+
+    def on_quiz(self) -> None:
+        from aqt.quiz import start_quiz
+
+        start_quiz(self)
+
+    def on_ai_settings(self) -> None:
+        from aqt.quiz import show_ai_settings
+
+        show_ai_settings(self)
 
     def onStudyDeck(self) -> None:
         from aqt.studydeck import StudyDeck

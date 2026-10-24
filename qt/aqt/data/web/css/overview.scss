@@ -5,6 +5,8 @@
 @use "../../../../../ts/lib/sass/vars" as *;
 @use "../../../../../ts/lib/sass/card-counts";
 @use "../../../../../ts/lib/sass/button-mixins" as button;
+@use "../../../../../ts/lib/sass/elevation" as *;
+@use "../../../../../ts/lib/sass/motion";
 
 .smallLink {
     font-size: 10px;
@@ -12,6 +14,27 @@
 
 h3 {
     margin-bottom: 0;
+
+    .fancy & {
+        font-size: 1.6em;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+    }
+    @include motion.when-animated {
+        animation: rise-in 450ms motion.$ease-out backwards;
+    }
+}
+
+// new/learning/review counts
+table table tr {
+    @include motion.stagger($count: 3, $step: 70ms, $base: 120ms);
+    @include motion.when-animated {
+        animation: rise-in 450ms motion.$ease-out var(--enter-delay, 0ms) backwards;
+    }
+
+    b {
+        font-variant-numeric: tabular-nums;
+    }
 }
 
 .descfont {
@@ -39,4 +62,51 @@ h3 {
 
 #study {
     @include button.base($primary: true);
+
+    .fancy & {
+        position: relative;
+        overflow: hidden;
+        padding: 12px 28px;
+        border-radius: 999px;
+        font-size: 1.1em;
+        font-weight: 600;
+        @include elevation(2);
+
+        &:hover {
+            @include elevation(4);
+        }
+    }
+
+    @include motion.when-animated {
+        animation: pop-in 500ms motion.$ease-spring 300ms backwards;
+        transition:
+            transform var(--transition) motion.$ease-spring,
+            box-shadow var(--transition) linear;
+
+        &:hover {
+            transform: translateY(-2px);
+        }
+        &:active {
+            transform: scale(0.96);
+        }
+
+        // shine sweep on hover
+        &::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                110deg,
+                transparent 30%,
+                rgba(255 255 255 / 0.35) 50%,
+                transparent 70%
+            );
+            transform: translateX(-100%);
+            pointer-events: none;
+        }
+        &:hover::after {
+            transform: translateX(100%);
+            transition: transform 700ms ease-out;
+        }
+    }
 }
